@@ -39,16 +39,8 @@ int main(int argc, char **argv) {
 	
 	cudaMemcpy(d_A, h_A, M * K * sizeof(half), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_B, h_B, K * N * sizeof(half), cudaMemcpyHostToDevice);
-	
-	constexpr int WARP_SIZE = 32;
-	constexpr int WARPS_PER_BLOCK = 4;
-	
-	assert((M * N) % (WARPS_PER_BLOCK * WARP_SIZE) == 0);
-	
-	const int BLOCKS_PER_GRID = (M * N) / (WARPS_PER_BLOCK * WARP_SIZE);
 
 	// time kernel
-	
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
@@ -57,13 +49,11 @@ int main(int argc, char **argv) {
 	cudaEventRecord(start);
 	
 	for (int i = 0; i < iterations; i++) {
-		kernel_1_naive<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(d_A, d_B, d_C, M, K, N);
+		launch_kernel_1(d_A, d_B, d_C, M, N, K);
 	}
 	
 	cudaEventRecord(stop);
-	
 	cudaEventSynchronize(stop);
-	
 	cudaEventElapsedTime(&elapsed_time, start, stop);
 	
 	// check errors
@@ -84,4 +74,13 @@ int main(int argc, char **argv) {
 	CPU_gemm(h_A, h_B, cpu_C, M, N, K);
 	
 	compare_matrices(h_C, cpu_C, M, N);
+	
+	// free
+	delete[] h_A;
+	delete[] h_B;
+	delete[] h_C;
+	delete[] cpu_C;
+	cudaFree(d_A);
+	cudaFree(d_B);
+	cudaFree(d_C);
 }
