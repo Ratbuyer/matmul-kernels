@@ -4,14 +4,12 @@ INCLUDES=-I./
 OPTIMIZATION=-O3
 LINKS=-lcudart -lcuda
 
+OUTPUT=run
+
 all : 1
 
 1 : makefile run.cu 1_naive.cuh
-	$(NVCC) -arch=sm_${SM} $(OPTIMIZATION) $(INCLUDES) $(LINKS) run.cu -o run
-	
-
-run:
-	./run 4096 4096 4096 100
+	$(NVCC) -arch=sm_${SM} $(OPTIMIZATION) $(INCLUDES) $(LINKS) run.cu -o $(OUTPUT)
 
 clean :
-	rm -f run
+	rm -f $(OUTPUT)

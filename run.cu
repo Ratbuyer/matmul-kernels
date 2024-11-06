@@ -3,6 +3,7 @@
 
 #include "tools.cuh"
 #include "1_naive.cuh"
+#include "2_vector_load.cuh"
 
 constexpr int expected_argc = 5;
 
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
 	cudaEventRecord(start);
 	
 	for (int i = 0; i < iterations; i++) {
-		launch_kernel_1(d_A, d_B, d_C, M, N, K);
+		launch_kernel_2(d_A, d_B, d_C, M, N, K);
 	}
 	
 	cudaEventRecord(stop);
@@ -74,6 +75,8 @@ int main(int argc, char **argv) {
 	CPU_gemm(h_A, h_B, cpu_C, M, N, K);
 	
 	compare_matrices(h_C, cpu_C, M, N);
+	
+	// print_differnce(h_C, cpu_C, M, N, 0.0);
 	
 	// free
 	delete[] h_A;
