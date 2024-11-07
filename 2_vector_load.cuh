@@ -1,6 +1,6 @@
 // kernel 2, vectorized loading
 
-__global__ void kernel_2_vector_load(half *A, half *B, half* C, int M, int N, int K) {
+__global__ void kernel_2(half *A, half *B, half* C, int M, int N, int K) {
 	
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 	
@@ -18,6 +18,8 @@ __global__ void kernel_2_vector_load(half *A, half *B, half* C, int M, int N, in
 	int4 *A_buffer_ptr = reinterpret_cast<int4 *>(A_buffer);
 	
 	for (int k = 0; k < K / HALFS_PER_INT4; k++) {
+		
+		// load 8 halfs from A in one instruction
 		A_buffer_ptr[0] = A_int4[k];
 		
 		for (int i = 0; i < HALFS_PER_INT4; i++) {
@@ -37,5 +39,5 @@ void launch_kernel_2(half *A, half *B, half *C, int M, int N, int K) {
 	
 	const int BLOCKS_PER_GRID = (M * N) / (WARPS_PER_BLOCK * WARP_SIZE);
 	
-	kernel_2_vector_load<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, N, K);
+	kernel_2<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, N, K);
 }

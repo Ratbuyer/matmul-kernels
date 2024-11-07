@@ -1,6 +1,6 @@
 // Naive kernel, each thread processes one element of the output matrix
 
-__global__ void kernel_1_naive(half *A, half *B, half* C, int M, int N, int K) {
+__global__ void kernel_1(half *A, half *B, half* C, int M, int N, int K) {
 	
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 	
@@ -25,6 +25,6 @@ void launch_kernel_1(half *A, half *B, half *C, int M, int N, int K) {
 	
 	const int BLOCKS_PER_GRID = (M * N) / (WARPS_PER_BLOCK * WARP_SIZE);
 	
-	kernel_1_naive<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, K, N);
+	kernel_1<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, K, N);
 }
 

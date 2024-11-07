@@ -4,6 +4,7 @@
 #include "tools.cuh"
 #include "1_naive.cuh"
 #include "2_vector_load.cuh"
+#include "3_tiling.cuh"
 
 constexpr int expected_argc = 5;
 
