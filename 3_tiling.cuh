@@ -13,7 +13,7 @@ constexpr int WARPS_PER_BLOCK = 4;
 
 __global__ void kernel_3(half *A, half *B, half* C, int M, int N, int K) {
 	
- 	const int warpId = threadIdx.x / WARP_SIZE;
+	const int warpId = threadIdx.x / WARP_SIZE;
     const int laneId = threadIdx.x % WARP_SIZE;
     
     // Block and thread indices
