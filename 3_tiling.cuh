@@ -24,11 +24,9 @@ __global__ void kernel_3(half *A, half *B, half* C, int M, int N, int K) {
     __shared__ half Bs[b_K * b_N];
     
     int4 *As_int4 = reinterpret_cast<int4 *>(As + warpId * w_M * w_K);
-    int4 *Bs_int4 = reinterpret_cast<int4 *>(Bs);
     
     // pointers for vectorized loading
     int4 *A_int4 = reinterpret_cast<int4 *>(A + (blockRow * b_M + warpId * w_M) * K);
-    int4 *B_int4 = reinterpret_cast<int4 *>(B + blockCol * b_N);
     
     half acc[4] = {0};
     
