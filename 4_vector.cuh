@@ -1,19 +1,7 @@
 // 
 #pragma once
 
-constexpr int b_M = 64;
-constexpr int b_N = 64;
-constexpr int b_K = 64;
-
-constexpr int w_M = 32;
-constexpr int w_N = 32;
-
-constexpr int t_M = 8;
-constexpr int t_N = 4;
-// constexpr int w_K = 16;
-
-constexpr int WARP_SIZE = 32;
-constexpr int WARPS_PER_BLOCK = 4;
+#include "constants.cuh"
 
 __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
 	
@@ -34,30 +22,32 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
     __shared__ __align__(16) half Bs[b_K * b_N];
     
     int4 * A_int4 = reinterpret_cast<int4 *>(A);
+    int4 * B_int4 = reinterpret_cast<int4 *>(B);
     
     int4 * As_int4 = reinterpret_cast<int4 *>(As);
+    int4 * Bs_int4 = reinterpret_cast<int4 *>(Bs);
 
     half acc[t_M][t_N] = {0};
     
     half ar[t_M];
     half br[t_N];
     
-    const int t_load_row = laneId / 2;
-    const int t_load_col = laneId % 2;
+    const int t_load_row = threadIdx.x / 8;
+    const int t_load_col = threadIdx.x % 8;
 
     for (int k = 0; k < K / b_K; k++) {
 		// each thread loads one row of A
 		#pragma unroll
 		for (int a = 0; a < 4; a++) {
-			As_int4[(warpId * 16 + t_load_row) * (b_K / 8) + a * 2 + t_load_col] = 
-				A_int4[(blockRow * b_M + warpId * 16 + t_load_row) * K / 8 + k * b_K / 8 + a * 2 + t_load_col];
+			As_int4[(a * 16 + t_load_row) * b_K / 8 + t_load_col] = 
+				A_int4[(blockRow * b_M + a * 16 + t_load_row) * K / 8 + k * b_K / 8 + t_load_col];
 		}
 		
 		// each thread loads one column of B
 		#pragma unroll
-		for (int b = 0; b < b_N / 2; b++) {
-			Bs[t_load_row * b_N + t_load_col * b_M / 2 + b] = 
-				B[(k * b_K + t_load_row) * N + blockCol * b_N + t_load_col * b_N / 2 + b];
+		for (int b = 0; b < 4; b++) {
+			Bs_int4[(b * 16 + t_load_row) * b_K / 8 + t_load_col] = 
+				B_int4[(k * b_K + b * 16 + t_load_row) * N / 8 + blockCol * b_N / 8 + t_load_col];
 		}
 		
 		// compute, each threads computes 16x8

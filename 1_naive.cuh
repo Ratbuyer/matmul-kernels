@@ -1,5 +1,9 @@
 // Naive kernel, each thread processes one element of the output matrix
 
+#pragma once
+
+#include "constants.cuh"
+
 __global__ void kernel_1(half *A, half *B, half* C, int M, int N, int K) {
 	
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -17,10 +21,6 @@ __global__ void kernel_1(half *A, half *B, half* C, int M, int N, int K) {
 }
 
 void launch_kernel_1(half *A, half *B, half *C, int M, int N, int K) {
-	
-	constexpr int WARP_SIZE = 32;
-	constexpr int WARPS_PER_BLOCK = 4;
-	
 	assert((M * N) % (WARPS_PER_BLOCK * WARP_SIZE) == 0);
 	
 	const int BLOCKS_PER_GRID = (M * N) / (WARPS_PER_BLOCK * WARP_SIZE);

@@ -3,11 +3,11 @@
 
 #include "tools.cuh"
 #include "1_naive.cuh"
-// #include "2_tiling.cuh"
+#include "2_tiling.cuh"
 #include "3_coalesce.cuh"
-// #include "4_vector.cuh"
+#include "4_vector.cuh"
 
-constexpr int expected_argc = 5;
+constexpr int expected_argc = 6;
 
 int main(int argc, char **argv) {
 	
@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 	const int N = std::stoi(argv[2]);
 	const int K = std::stoi(argv[3]);
 	const int iterations = std::stoi(argv[4]);
+	const int kernel = std::stoi(argv[5]);
 	
 	assert(M % 16 == 0);
 	assert(K % 16 == 0);
@@ -52,7 +53,20 @@ int main(int argc, char **argv) {
 	cudaEventRecord(start);
 	
 	for (int i = 0; i < iterations; i++) {
-		launch_kernel_3(d_A, d_B, d_C, M, N, K);
+		switch (kernel) {
+			case 1:
+				launch_kernel_1(d_A, d_B, d_C, M, N, K);
+				break;
+			case 2:
+				launch_kernel_2(d_A, d_B, d_C, M, N, K);
+				break;
+			case 3:
+				launch_kernel_3(d_A, d_B, d_C, M, N, K);
+				break;
+			case 4:
+				launch_kernel_4(d_A, d_B, d_C, M, N, K);
+				break;
+		}
 	}
 	
 	cudaEventRecord(stop);
