@@ -1,7 +1,7 @@
 SM=86
 NVCC=/usr/local/cuda-12.4/bin/nvcc
 INCLUDES=-I./
-OPTIMIZATION=-O3
+OPTIMIZATION=-O0
 LINKS=-lcudart -lcuda
 PTX=--ptxas-options=-v
 
