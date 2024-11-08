@@ -1,15 +1,15 @@
 // 
 #pragma once
 
-constexpr int b_M = 128;
-constexpr int b_N = 128;
-constexpr int b_K = 128;
+constexpr int b_M = 64;
+constexpr int b_N = 64;
+constexpr int b_K = 64;
 
-constexpr int w_M = 64;
-constexpr int w_N = 64;
+constexpr int w_M = 32;
+constexpr int w_N = 32;
 
-constexpr int t_M = 16;
-constexpr int t_N = 8;
+constexpr int t_M = 8;
+constexpr int t_N = 4;
 // constexpr int w_K = 16;
 
 constexpr int WARP_SIZE = 32;
@@ -24,31 +24,36 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
     const int blockRow = blockIdx.x / (N / b_N);
     const int blockCol = blockIdx.x % (N / b_N);
     
-	const int warp_row = warpId / 2;
-	const int warp_col = warpId % 2;
+	const int warp_row = warpId / (b_N / w_N);
+	const int warp_col = warpId % (b_N / w_N);
 	
-	const int thread_row = laneId / 8;
-	const int thread_col = laneId % 8;
+	const int thread_row = laneId / (w_N / t_N);
+	const int thread_col = laneId % (w_N / t_N);
     
     __shared__ __align__(16) half As[b_M * b_K];
     __shared__ __align__(16) half Bs[b_K * b_N];
 
-    half acc[t_M][t_N] = {1};
+    half acc[t_M][t_N] = {0};
     
     half ar[t_M];
     half br[t_N];
     
+    constexpr int t_load_row = (threadIdx.x / 2);
+    constexpr int t_load_col = (threadIdx.x % 2);
+    
     for (int k = 0; k < K / b_K; k++) {
 		// each thread loads one row of A
 		#pragma unroll
-		for (int a = 0; a < 128; a++) {
-			As[threadIdx.x * b_K + a] = A[(blockRow * b_M + threadIdx.x) * K + k * b_K + a];
+		for (int a = 0; a < b_K / 2; a++) {
+			As[t_load_row * b_K + t_load_col * b_K / 2 + a] = 
+				A[(blockRow * b_M + t_load_row) * K + k * b_K + t_load_col * b_K / 2 + a];
 		}
 		
 		// each thread loads one column of B
 		#pragma unroll
-		for (int b = 0; b < 128; b++) {
-			Bs[threadIdx.x * b_N + b] = B[(k * b_K + threadIdx.x) * N + blockCol * b_N + b];
+		for (int b = 0; b < b_N / 2; b++) {
+			Bs[t_load_row * b_N + t_load_col * b_M / 2 + b] = 
+				B[(k * b_K + t_load_row) * N + blockCol * b_N + t_load_col * b_N / 2 + b];
 		}
 		
 		// compute, each threads computes 16x8
