@@ -15,7 +15,7 @@ constexpr int t_N = 4;
 constexpr int WARP_SIZE = 32;
 constexpr int WARPS_PER_BLOCK = 4;
 
-__global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
+__global__ void kernel_2(half *A, half *B, half* C, int M, int N, int K) {
 	
 	const int warpId = threadIdx.x / WARP_SIZE;
     const int laneId = threadIdx.x % WARP_SIZE;
@@ -38,8 +38,8 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
     half ar[t_M];
     half br[t_N];
     
-    constexpr int t_load_row = (threadIdx.x / 2);
-    constexpr int t_load_col = (threadIdx.x % 2);
+    const int t_load_row = (threadIdx.x / 2);
+    const int t_load_col = (threadIdx.x % 2);
     
     for (int k = 0; k < K / b_K; k++) {
 		// each thread loads one row of A
@@ -96,8 +96,8 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
 }
 
 
-void launch_kernel_4(half *A, half *B, half *C, int M, int N, int K) {
+void launch_kernel_2(half *A, half *B, half *C, int M, int N, int K) {
 	const int BLOCKS_PER_GRID = (M / b_M) * (N / b_N);
 	
-	kernel_4<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, N, K);
+	kernel_2<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, N, K);
 }

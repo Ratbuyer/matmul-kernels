@@ -15,7 +15,7 @@ constexpr int t_N = 4;
 constexpr int WARP_SIZE = 32;
 constexpr int WARPS_PER_BLOCK = 4;
 
-__global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
+__global__ void kernel_3(half *A, half *B, half* C, int M, int N, int K) {
 	
 	const int warpId = threadIdx.x / WARP_SIZE;
     const int laneId = threadIdx.x % WARP_SIZE;
@@ -51,9 +51,9 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
 		
 		// each thread loads one column of B
 		#pragma unroll
-		for (int b = 0; b < b_N / 2; b++) {
-			Bs[t_load_row * b_N + t_load_col * b_M / 2 + b] = 
-				B[(k * b_K + t_load_row) * N + blockCol * b_N + t_load_col * b_N / 2 + b];
+		for (int b = 0; b < 32; b++) {
+			Bs[(warp_row * w_M + b) * b_N + warp_col * 32 + laneId] = 
+				B[(k * b_K + warp_row * w_M + b) * N + blockCol * b_N + warp_col * 32 + laneId];
 		}
 		
 		// compute, each threads computes 16x8
@@ -85,7 +85,7 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
     }
 
 	__syncthreads();
-    
+
     // store
     #pragma unroll
 	for (int i = 0; i < t_M; i++) {
@@ -99,8 +99,8 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
 }
 
 
-void launch_kernel_4(half *A, half *B, half *C, int M, int N, int K) {
+void launch_kernel_3(half *A, half *B, half *C, int M, int N, int K) {
 	const int BLOCKS_PER_GRID = (M / b_M) * (N / b_N);
 	
-	kernel_4<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, N, K);
+	kernel_3<<<BLOCKS_PER_GRID, WARPS_PER_BLOCK * WARP_SIZE>>>(A, B, C, M, N, K);
 }
