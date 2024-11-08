@@ -38,9 +38,6 @@ __global__ void kernel_3(half *A, half *B, half* C, int M, int N, int K) {
     half ar[t_M];
     half br[t_N];
     
-    const int t_load_row = (threadIdx.x / 2);
-    const int t_load_col = (threadIdx.x % 2);
-    
     for (int k = 0; k < K / b_K; k++) {
 		// each thread loads one row of A
 		#pragma unroll

@@ -5,6 +5,7 @@
 #include "1_naive.cuh"
 // #include "2_tiling.cuh"
 #include "3_coalesce.cuh"
+// #include "4_vector.cuh"
 
 constexpr int expected_argc = 5;
 
