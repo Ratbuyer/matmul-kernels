@@ -6,6 +6,7 @@
 #include "2_tiling.cuh"
 #include "3_coalesce.cuh"
 #include "4_vector.cuh"
+#include "5_tensor_core.cuh"
 
 constexpr int expected_argc = 6;
 
@@ -66,6 +67,9 @@ int main(int argc, char **argv) {
 			case 4:
 				launch_kernel_4(d_A, d_B, d_C, M, N, K);
 				break;
+			case 5:
+				launch_kernel_5(d_A, d_B, d_C, M, N, K);
+				break;
 		}
 	}
 	
@@ -93,7 +97,7 @@ int main(int argc, char **argv) {
 	CPU_gemm(h_A, h_B, cpu_C, M, N, K);
 	compare_matrices(h_C, cpu_C, M, N);
 	
-	// print_differnce(h_C, cpu_C, M, N, 0.0);
+	print_differnce(h_C, cpu_C, M, N, 0.01);
 	
 	// free
 	delete[] h_A;

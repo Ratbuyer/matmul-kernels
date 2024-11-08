@@ -1,4 +1,3 @@
-// 
 #pragma once
 
 #include "constants.cuh"
@@ -68,7 +67,6 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
 			}
 			
 			// compute
-
 			for (int i = 0; i < t_M; i++) {
 				for (int j = 0; j < t_N; j++) {
 					acc[i][j] += ar[i] * br[j];
