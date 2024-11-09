@@ -7,13 +7,14 @@
 #include "3_coalesce.cuh"
 #include "4_vector.cuh"
 #include "5_tensor_core.cuh"
+#include "6_double_buffer.cuh"
 
-constexpr int expected_argc = 6;
+constexpr int expected_argc = 7;
 
 int main(int argc, char **argv) {
 	
 	if (argc != expected_argc) {
-		std::cerr << "Usage: " << argv[0] << " <M> <K> <N> <Iterations>" << std::endl;
+		std::cerr << "Usage: " << argv[0] << " <M> <K> <N> <Iterations> <check>" << std::endl;
 		return 1;
 	}
 	
@@ -22,6 +23,12 @@ int main(int argc, char **argv) {
 	const int K = std::stoi(argv[3]);
 	const int iterations = std::stoi(argv[4]);
 	const int kernel = std::stoi(argv[5]);
+	const int check = std::stoi(argv[6]);
+	
+	if (M <= 0 || N <= 0 || K <= 0 || iterations <= 0 || kernel <= 0 || kernel > 6 || check < 0 || check > 1) {
+		std::cerr << "Usage: " << argv[0] << " <M> <K> <N> <Iterations> <check>" << std::endl;
+		return 1;
+	}
 	
 	assert(M % 16 == 0);
 	assert(K % 16 == 0);
@@ -70,6 +77,12 @@ int main(int argc, char **argv) {
 			case 5:
 				launch_kernel_5(d_A, d_B, d_C, M, N, K);
 				break;
+			case 6:
+				launch_kernel_6(d_A, d_B, d_C, M, N, K);
+				break;
+			default:
+				std::cerr << "Invalid kernel" << std::endl;
+				return 1;
 		}
 	}
 	
@@ -85,7 +98,10 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	
-	printf("Elapsed time: %f ms\n", elapsed_time);
+	printf("Latency: %f ms\n", elapsed_time / iterations);
+	
+	long long throughput = static_cast<long long>(M) * N * K * 2 * iterations;
+    printf("Throughput: %f GB/s\n", throughput * 1.0 / (elapsed_time * 1e6));
 	
 	// copy result back
 	cudaMemcpy(h_C, d_C, M * N * sizeof(half), cudaMemcpyDeviceToHost);
@@ -94,9 +110,12 @@ int main(int argc, char **argv) {
 	
 	half *cpu_C = new half[M * N];
 	
-	CPU_gemm(h_A, h_B, cpu_C, M, N, K);
-	compare_matrices(h_C, cpu_C, M, N);
+	if (check) {
+		CPU_gemm(h_A, h_B, cpu_C, M, N, K);
+		compare_matrices(h_C, cpu_C, M, N);
+	}
 	
+	// use this for debugging
 	// print_differnce(h_C, cpu_C, M, N, 0.0);
 	
 	// free

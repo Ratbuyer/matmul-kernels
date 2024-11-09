@@ -233,3 +233,44 @@ void fill_24(half *matrix, int rows, int cols)
     matrix[i + position2] = __float2half(rand_half());
   }
 }
+
+__device__ __forceinline__ void
+MMA_FP16_M16N8K16(uint32_t __restrict__ c[], uint32_t __restrict__* a, uint32_t __restrict__* b)
+{
+    asm volatile("mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16 "
+                 "{ %0, %1 },"
+                 "{ %2, %3, %4, %5 },"
+                 "{ %6, %7 },"
+                 "{ %8, %9 };"
+                 : "=r"(c[0]), "=r"(c[1])    // Output operands
+                 : "r"(a[0]), "r"(a[1]), "r"(a[2]), "r"(a[3]),  // Input operands
+                   "r"(b[0]), "r"(b[1]), 
+                   "r"(c[0]), "r"(c[1])      // Input operands (initial values of c)
+                 : "memory");                // Clobber list
+}
+
+template<int SizeInBytes>
+__device__ __forceinline__ void cp_async(half* smem_ptr, const half* global_ptr, bool pred_guard = true)
+{
+    static_assert((SizeInBytes == 4 || SizeInBytes == 8 || SizeInBytes == 16), "Size is not supported");
+    unsigned smem_int_ptr = __cvta_generic_to_shared(smem_ptr);
+    asm volatile("{ \n"
+                 "  .reg .pred p;\n"
+                 "  setp.ne.b32 p, %0, 0;\n"
+                 "  @p cp.async.cg.shared.global [%1], [%2], %3;\n"
+                 "}\n" ::"r"((int)pred_guard),
+                 "r"(smem_int_ptr),
+                 "l"(global_ptr),
+                 "n"(SizeInBytes));
+}
+
+__device__ __forceinline__ void cp_async_group_commit()
+{
+    asm volatile("cp.async.commit_group;\n" ::);
+}
+
+template<int N>
+__device__ __forceinline__ void cp_async_wait_group()
+{
+    asm volatile("cp.async.wait_group %0;\n" ::"n"(N));
+}

@@ -2,22 +2,6 @@
 
 #include "constants.cuh"
 
-__device__ __forceinline__ void
-MMA_FP16_M16N8K16(uint32_t __restrict__ c[], uint32_t __restrict__* a, uint32_t __restrict__* b)
-{
-    asm volatile("mma.sync.aligned.m16n8k16.row.col.f16.f16.f16.f16 "
-                 "{ %0, %1 },"
-                 "{ %2, %3, %4, %5 },"
-                 "{ %6, %7 },"
-                 "{ %8, %9 };"
-                 : "=r"(c[0]), "=r"(c[1])    // Output operands
-                 : "r"(a[0]), "r"(a[1]), "r"(a[2]), "r"(a[3]),  // Input operands
-                   "r"(b[0]), "r"(b[1]), 
-                   "r"(c[0]), "r"(c[1])      // Input operands (initial values of c)
-                 : "memory");                // Clobber list
-}
-
-
 __global__ void kernel_5(half *A, half *B, half* C, int M, int N, int K) {
 	
 	const int warpId = threadIdx.x / WARP_SIZE;
