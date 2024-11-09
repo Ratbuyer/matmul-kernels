@@ -27,12 +27,6 @@ __global__ void kernel_5(half *A, half *B, half* C, int M, int N, int K) {
     const int blockRow = blockIdx.x / (N / b_N);
     const int blockCol = blockIdx.x % (N / b_N);
     
-	const int warp_row = warpId / (b_N / w_N);
-	const int warp_col = warpId % (b_N / w_N);
-	
-	const int thread_row = laneId / (w_N / t_N);
-	const int thread_col = laneId % (w_N / t_N);
-    
     __shared__ __align__(16) half As[b_M * b_K];
     __shared__ __align__(16) half Bs[b_K * b_N];
     
@@ -78,13 +72,10 @@ __global__ void kernel_5(half *A, half *B, half* C, int M, int N, int K) {
 			// load a to registers
 			ar[0] = As[(warpId * 16 + groupId) * b_K + wk * 16 + threadId_in_group * 2];
 			ar[1] = As[(warpId * 16 + groupId) * b_K + wk * 16 + threadId_in_group * 2 + 1];
-			
 			ar[2] = As[(warpId * 16 + groupId + 8) * b_K + wk * 16 + threadId_in_group * 2];
 			ar[3] = As[(warpId * 16 + groupId + 8) * b_K + wk * 16 + threadId_in_group * 2 + 1];
-			
 			ar[4] = As[(warpId * 16 + groupId) * b_K + wk * 16 + threadId_in_group * 2 + 8];
 			ar[5] = As[(warpId * 16 + groupId) * b_K + wk * 16 + threadId_in_group * 2 + 8 + 1];
-			
 			ar[6] = As[(warpId * 16 + groupId + 8) * b_K + wk * 16 + threadId_in_group * 2 + 8];
 			ar[7] = As[(warpId * 16 + groupId + 8) * b_K + wk * 16 + threadId_in_group * 2 + 8 + 1];
 			
@@ -93,7 +84,6 @@ __global__ void kernel_5(half *A, half *B, half* C, int M, int N, int K) {
 			for (int b = 0; b < 8; b++) {
 				br[b][0] = Bs[(wk * 16 + threadId_in_group * 2) * b_N + b * 8 + groupId];
 				br[b][1] = Bs[(wk * 16 + threadId_in_group * 2 + 1) * b_N + b * 8 + groupId];
-				
 				br[b][2] = Bs[(wk * 16 + threadId_in_group * 2 + 8) * b_N + b * 8 + groupId];
 				br[b][3] = Bs[(wk * 16 + threadId_in_group * 2 + 8 + 1) * b_N + b * 8 + groupId];
 			}
@@ -116,7 +106,6 @@ __global__ void kernel_5(half *A, half *B, half* C, int M, int N, int K) {
 		C[(blockRow * b_M + warpId * 16 + groupId + 8) * N + blockCol * b_N + n * 8 + threadId_in_group * 2] = acc[n][2];
 		C[(blockRow * b_M + warpId * 16 + groupId + 8) * N + blockCol * b_N + n * 8 + threadId_in_group * 2 + 1] = acc[n][3];
     }
-    
 }
 
 
