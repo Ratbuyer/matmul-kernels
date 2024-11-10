@@ -1,0 +1,57 @@
+Running kernel 1 with N=512
+Latency: 0.441759 ms
+Throughput: 607.651312 GB/s
+Running kernel 1 with N=1024
+Latency: 3.322225 ms
+Throughput: 646.399153 GB/s
+Running kernel 1 with N=4096
+Latency: 515.560791 ms
+Throughput: 266.581455 GB/s
+Running kernel 2 with N=512
+Latency: 0.095969 ms
+Throughput: 2797.116465 GB/s
+Running kernel 2 with N=1024
+Latency: 0.583142 ms
+Throughput: 3682.610036 GB/s
+Running kernel 2 with N=4096
+Latency: 39.050552 ms
+Throughput: 3519.513740 GB/s
+Running kernel 3 with N=512
+Latency: 0.055327 ms
+Throughput: 4851.767092 GB/s
+Running kernel 3 with N=1024
+Latency: 0.280907 ms
+Throughput: 7644.823772 GB/s
+Running kernel 3 with N=4096
+Latency: 21.513151 ms
+Throughput: 6388.601466 GB/s
+Running kernel 4 with N=512
+Latency: 0.042196 ms
+Throughput: 6361.560570 GB/s
+Running kernel 4 with N=1024
+Latency: 0.250020 ms
+Throughput: 8589.253072 GB/s
+Running kernel 4 with N=4096
+Latency: 18.044306 ms
+Throughput: 7616.749455 GB/s
+Running kernel 5 with N=512
+Latency: 0.043494 ms
+Throughput: 6171.724405 GB/s
+Running kernel 5 with N=1024
+Latency: 0.245508 ms
+Throughput: 8747.085426 GB/s
+Running kernel 5 with N=4096
+Latency: 15.922402 ms
+Throughput: 8631.797546 GB/s
+Running kernel 6 with N=512
+Latency: 0.043529 ms
+Throughput: 6166.870112 GB/s
+Running kernel 6 with N=1024
+Latency: 0.222040 ms
+Throughput: 9671.606928 GB/s
+Running kernel 6 with N=4096
+Latency: 14.678113 ms
+Throughput: 9363.530272 GB/s
+
+
+3060

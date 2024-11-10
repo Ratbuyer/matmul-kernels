@@ -1,4 +1,4 @@
-SM=80
+SM=90a
 NVCC=/usr/local/cuda-12.4/bin/nvcc
 INCLUDES=-I./
 OPTIMIZATION=-O3
