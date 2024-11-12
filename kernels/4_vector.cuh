@@ -26,10 +26,9 @@ __global__ void kernel_4(half *A, half *B, half* C, int M, int N, int K) {
     int4 * As_int4 = reinterpret_cast<int4 *>(As);
     int4 * Bs_int4 = reinterpret_cast<int4 *>(Bs);
 
-    half acc[t_M][t_N] = {0};
-    
     half ar[t_M];
     half br[t_N];
+    half acc[t_M][t_N] = {0};
     
     const int t_load_row = threadIdx.x / 8;
     const int t_load_col = threadIdx.x % 8;

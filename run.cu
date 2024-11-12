@@ -6,8 +6,7 @@
 #include "2_tiling.cuh"
 #include "3_coalesce.cuh"
 #include "4_vector.cuh"
-#include "5_tensor_core.cuh"
-#include "6_double_buffer.cuh"
+#include "5_double_buffer.cuh"
 
 constexpr int expected_argc = 7;
 
@@ -77,9 +76,6 @@ int main(int argc, char **argv) {
 			case 5:
 				launch_kernel_5(d_A, d_B, d_C, M, N, K);
 				break;
-			case 6:
-				launch_kernel_6(d_A, d_B, d_C, M, N, K);
-				break;
 			default:
 				std::cerr << "Invalid kernel" << std::endl;
 				return 1;
@@ -98,10 +94,10 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	
-	printf("Latency: %f ms\n", elapsed_time / iterations);
+	// printf("Latency: %f ms\n", elapsed_time / iterations);
 	
 	long long throughput = static_cast<long long>(M) * N * K * 2 * iterations;
-    printf("Throughput: %f GB/s\n", throughput * 1.0 / (elapsed_time * 1e6));
+    printf("Kernel: %d, M/N/K: %d, %d, %d, Throughput: %f GB/s\n", kernel, M, N, K, throughput * 1.0 / (elapsed_time * 1e6));
 	
 	// copy result back
 	cudaMemcpy(h_C, d_C, M * N * sizeof(half), cudaMemcpyDeviceToHost);
