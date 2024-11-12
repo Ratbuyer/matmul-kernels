@@ -1,0 +1,34 @@
+Running kernel 1 with N=512
+Kernel: 1, M/N/K: 512, 512, 512, Throughput: 670.674617 GB/s
+Running kernel 1 with N=1024
+Kernel: 1, M/N/K: 1024, 1024, 1024, Throughput: 729.374374 GB/s
+Running kernel 1 with N=4096
+Kernel: 1, M/N/K: 4096, 4096, 4096, Throughput: 267.830291 GB/s
+
+Running kernel 2 with N=512
+Kernel: 2, M/N/K: 512, 512, 512, Throughput: 2780.879809 GB/s
+Running kernel 2 with N=1024
+Kernel: 2, M/N/K: 1024, 1024, 1024, Throughput: 3611.718336 GB/s
+Running kernel 2 with N=4096
+Kernel: 2, M/N/K: 4096, 4096, 4096, Throughput: 3536.121320 GB/s
+
+Running kernel 3 with N=512
+Kernel: 3, M/N/K: 512, 512, 512, Throughput: 5094.687972 GB/s
+Running kernel 3 with N=1024
+Kernel: 3, M/N/K: 1024, 1024, 1024, Throughput: 6621.642319 GB/s
+Running kernel 3 with N=4096
+Kernel: 3, M/N/K: 4096, 4096, 4096, Throughput: 6331.085169 GB/s
+
+Running kernel 4 with N=512
+Kernel: 4, M/N/K: 512, 512, 512, Throughput: 5902.880720 GB/s
+Running kernel 4 with N=1024
+Kernel: 4, M/N/K: 1024, 1024, 1024, Throughput: 7929.564161 GB/s
+Running kernel 4 with N=4096
+Kernel: 4, M/N/K: 4096, 4096, 4096, Throughput: 7591.005804 GB/s
+
+Running kernel 5 with N=512
+Kernel: 5, M/N/K: 512, 512, 512, Throughput: 6660.926198 GB/s
+Running kernel 5 with N=1024
+Kernel: 5, M/N/K: 1024, 1024, 1024, Throughput: 8669.823149 GB/s
+Running kernel 5 with N=4096
+Kernel: 5, M/N/K: 4096, 4096, 4096, Throughput: 8055.988043 GB/s
