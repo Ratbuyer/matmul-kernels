@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
 	// printf("Latency: %f ms\n", elapsed_time / iterations);
 	
 	long long throughput = static_cast<long long>(M) * N * K * 2 * iterations;
-    printf("Kernel: %d, M/N/K: %d, %d, %d, Throughput: %f GB/s\n", kernel, M, N, K, throughput * 1.0 / (elapsed_time * 1e6));
+    printf("Kernel: %d, M/N/K: %d, %d, %d, Throughput: %f GFLOPs/s\n", kernel, M, N, K, throughput * 1.0 / (elapsed_time * 1e6));
 	
 	// copy result back
 	cudaMemcpy(h_C, d_C, M * N * sizeof(half), cudaMemcpyDeviceToHost);
