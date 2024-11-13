@@ -1,0 +1,38 @@
+doneroot@e516b545576d:~/matmul-kernels# bash script.sh 
+Running kernel 1 with N=512
+Kernel: 1, M/N/K: 512, 512, 512, Throughput: 4806.407285 GB/s
+Running kernel 1 with N=1024
+Kernel: 1, M/N/K: 1024, 1024, 1024, Throughput: 5200.559854 GB/s
+Running kernel 1 with N=4096
+Kernel: 1, M/N/K: 4096, 4096, 4096, Throughput: 5304.807542 GB/s
+
+Running kernel 2 with N=512
+Kernel: 2, M/N/K: 512, 512, 512, Throughput: 7384.643883 GB/s
+Running kernel 2 with N=1024
+Kernel: 2, M/N/K: 1024, 1024, 1024, Throughput: 17681.551923 GB/s
+Running kernel 2 with N=4096
+Kernel: 2, M/N/K: 4096, 4096, 4096, Throughput: 18539.414559 GB/s
+
+Running kernel 3 with N=512
+Kernel: 3, M/N/K: 512, 512, 512, Throughput: 12403.623287 GB/s
+Running kernel 3 with N=1024
+Kernel: 3, M/N/K: 1024, 1024, 1024, Throughput: 35764.155998 GB/s
+Running kernel 3 with N=4096
+Kernel: 3, M/N/K: 4096, 4096, 4096, Throughput: 42260.870299 GB/s
+
+Running kernel 4 with N=512
+Kernel: 4, M/N/K: 512, 512, 512, Throughput: 14963.384915 GB/s
+Running kernel 4 with N=1024
+Kernel: 4, M/N/K: 1024, 1024, 1024, Throughput: 40849.275588 GB/s
+Running kernel 4 with N=4096
+Kernel: 4, M/N/K: 4096, 4096, 4096, Throughput: 46624.137484 GB/s
+
+Running kernel 5 with N=512
+Kernel: 5, M/N/K: 512, 512, 512, Throughput: 16751.385829 GB/s
+Running kernel 5 with N=1024
+Kernel: 5, M/N/K: 1024, 1024, 1024, Throughput: 44276.554190 GB/s
+Running kernel 5 with N=4096
+Kernel: 5, M/N/K: 4096, 4096, 4096, Throughput: 50824.146940 GB/s
+
+
+h100 sxm
